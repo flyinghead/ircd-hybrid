@@ -64,7 +64,7 @@ static mp_pool_t *client_pool, *connection_pool;
 static dlink_list dead_list, abort_list;
 static dlink_node *eac_next;  /* next aborted client to exit */
 //sponji
-char USER_COUNT_FILENAME[] = "etc/usercount.txt";
+char USER_COUNT_FILENAME[] = DATAPATH "/usercount.txt";
 
 /*
  * make_client - create a new Client struct and set it to initial state.

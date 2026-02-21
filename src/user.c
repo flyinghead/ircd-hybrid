@@ -49,7 +49,7 @@
 #include "watch.h"
 
 #include "netircpw.h" //sponji
-const char USER_COUNT_FILENAME2[] = "etc/usercount.txt";
+const char USER_COUNT_FILENAME2[] = DATAPATH "/usercount.txt";
 
 static char umode_buffer[IRCD_BUFSIZE];
 static const char *uid_get(void);
