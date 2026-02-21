@@ -1,7 +1,13 @@
 *.o
 *.lo
 *.la
+.deps
 .libs
 /.settings
 /.project
 /.cproject
+/config.h
+/config.log
+/config.status
+/libtool
+/Makefile
