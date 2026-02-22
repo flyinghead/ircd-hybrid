@@ -61,12 +61,12 @@ extern int checkBootHacker(struct Client *, struct Client *);
 extern int checkRealName(const char *, struct Client *);
 #endif
 
-static void m_usrip(struct Client *, int, char **);
-static void m_rchg(struct Client *, int, char **);
-static void m_rlst(struct Client *, int, char **);
-static void ms_rlst(struct Client *, int, char **);
-static void m_broadcast(struct Client *, int, char **);
-static void m_ban(struct Client *, struct Client *, int, char **);
+static int m_usrip(struct Client *, int, char **);
+static int m_rchg(struct Client *, int, char **);
+static int m_rlst(struct Client *, int, char **);
+static int ms_rlst(struct Client *, int, char **);
+static int m_broadcast(struct Client *, int, char **);
+static int m_ban(struct Client *, int, char **);
 
 
 #ifndef STATIC_MODULES
@@ -82,7 +82,7 @@ static void m_ban(struct Client *, struct Client *, int, char **);
 void m_evo_not_oper(struct Client *client_p, struct Client *source_p,
                int parc, char *parv[])
 {
-  sendto_realops_flags(UMODE_ALL, L_ALL,
+  sendto_realops_flags(UMODE_ALL, L_ALL, SEND_NOTICE,
                        "HACKER ALERT: Non-Oper used %s command.", parv[0]);
 #ifdef USE_MORE_CODE
   warnLikelyHackerDetails(source_p);
@@ -151,7 +151,7 @@ evo_check_nick(va_list args)
 // m_usrip()
 
 //static void m_usrip(struct Client *source_p, int parc, char *parv[])
-static void m_usrip(struct Client *source_p,
+static int m_usrip(struct Client *source_p,
       int parc, char *parv[])
 {
   struct Client *target_p;
@@ -178,7 +178,7 @@ static void m_usrip(struct Client *source_p,
     //sendto_one(source_p,"%s", buf);
     sendto_one(source_p,":%s 302 unknown=+unknown@%s", me.name, source_p->sockhost);
    }
-  return;
+  return 0;
 }
 
 /*
@@ -186,7 +186,7 @@ static void m_usrip(struct Client *source_p,
 **      parv[0] = sender prefix
 **      parv[1] = real name info
 */
-static void m_rchg(struct Client *source_p,
+static int m_rchg(struct Client *source_p,
        int parc, char *parv[])
 {
 		
@@ -195,17 +195,17 @@ static void m_rchg(struct Client *source_p,
 	char hold[100];
 
 	if (source_p == NULL)
-		return;
+		return 0;
 
 	if (parc != 2)
   	{
-		return;
+		return 0;
 	}
 	realName = parv[1];
 	if (realName == NULL)
   	{
 	        sendto_one_numeric(source_p, &me, ERR_NEEDMOREPARAMS, "RCHG");
-		return;
+		return 0;
 	}
 
 	/*if (IsServer(client_p))
@@ -230,22 +230,22 @@ static void m_rchg(struct Client *source_p,
 	strcpy(hold, source_p->info);
 	if (!HasOFlag(source_p, OPER_FLAG_OPME)) {
                 if (hold[0] == '^') {
-                        sendto_realops_flags(UMODE_ALL, L_ALL,"%s (%s@%s) [%s] IP = %s Blank Name", 
+                        sendto_realops_flags(UMODE_ALL, L_ALL, SEND_NOTICE, "%s (%s@%s) [%s] IP = %s Blank Name",
                                 source_p->name, source_p->username, source_p->host, source_p->info, source_p->sockhost);
                         exit_client(source_p, "Restricted nickname");
-                        return;
+                        return 0;
                 }
                 if (hold[0] == ' ') {
-                        sendto_realops_flags(UMODE_ALL, L_ALL,"%s (%s@%s) [%s] IP = %s Blank Name", 
+                        sendto_realops_flags(UMODE_ALL, L_ALL, SEND_NOTICE, "%s (%s@%s) [%s] IP = %s Blank Name",
                                 source_p->name, source_p->username, source_p->host, source_p->info, source_p->sockhost);
                         exit_client(source_p, "Restricted nickname");
-                        return;
+                        return 0;
                 }
                 if (hold[0] == '�') {
-                        sendto_realops_flags(UMODE_ALL, L_ALL,"%s (%s@%s) [%s] IP = %s Blank Name", 
+                        sendto_realops_flags(UMODE_ALL, L_ALL, SEND_NOTICE, "%s (%s@%s) [%s] IP = %s Blank Name",
                                 source_p->name, source_p->username, source_p->host, source_p->info, source_p->sockhost);
                         exit_client(source_p, "Restricted nickname");
-                        return;
+                        return 0;
                 }
         }
 
@@ -258,7 +258,7 @@ static void m_rchg(struct Client *source_p,
 	strlcpy(source_p->info, realName, sizeof(source_p->info));
         //hash_add_client(source_p);
        // fd_note(&source_p->connection->fd, "RCHG: %s", realName);
-
+	return 0;
 }
 
 /*
@@ -266,13 +266,13 @@ static void m_rchg(struct Client *source_p,
 **      parv[0] = sender prefix
 **      parv[1] = nickname mask list
 */
-static void m_rlst(struct Client *source_p,
+static int m_rlst(struct Client *source_p,
        int parc, char *parv[]) {
 	// For now, let's just treat this as a who message.
 	// It's extra bandwidth to send since the who command has more
 	// info than we need, but for now we won't worry about it
 
-   return;
+   return 0;
    //return m_who(client_p, source_p, parc, parv); //sponji
 }
 
@@ -281,14 +281,14 @@ static void m_rlst(struct Client *source_p,
 **      parv[0] = sender prefix
 **      parv[1] = nickname mask list
 */
-static void ms_rlst(struct Client *source_p,
+static int ms_rlst(struct Client *source_p,
        int parc, char *parv[])
 {
 	// For now, let's just treat this as a who message.
 	// It's extra bandwidth to send since the who command has more
 	// info than we need, but for now we won't worry about it
 
-  return;
+  return 0;
 //return ms_who(client_p, source_p, parc, parv); //sponji
 }
 /*
@@ -301,10 +301,11 @@ static void ms_rlst(struct Client *source_p,
 **      parv[0] = sender prefix
 **      parv[1] = message
 */
-static void m_broadcast(struct Client *source_p, 
+static int m_broadcast(struct Client *source_p,
 	int parc, char *parv[]) 
 {
   	sendto_match_butone(source_p->from, source_p, "*", MATCH_HOST, "BROADCAST :%s", parv[1]);
+	return 0;
 }
 
 /*
@@ -315,8 +316,7 @@ static void m_broadcast(struct Client *source_p,
 **      parv[3] = duration (0 or omitted if ban does not expire)
 */
 //TODO: actually check the ban expire times when some1 tries to join..
-static void m_ban(struct Client *client_p, struct Client *source_p,
-      int parc, char *parv[]) {
+static int m_ban(struct Client *source_p, int parc, char *parv[]) {
   struct Channel *chptr;
   int duration = 0;
   char banStr[NICKLEN+USERLEN+HOSTLEN + 100];
@@ -333,7 +333,7 @@ static void m_ban(struct Client *client_p, struct Client *source_p,
   if ((chptr = hash_find_channel(parv[1])) == NULL) {
     sendto_one(source_p, numeric_form(ERR_NOSUCHCHANNEL),
                me.name, parv[0], parv[1]);
-    return;
+    return 0;
   }
 
   // Fetch the ban parameter
@@ -345,7 +345,7 @@ static void m_ban(struct Client *client_p, struct Client *source_p,
   }
 
   // Check if this if from a server, then trust it
-  if (IsServer(client_p)) {
+  if (IsServer(source_p)) {
 
     // The server should have already looked up the
     // nick and generated a real name mask.  The parm should
@@ -361,13 +361,13 @@ static void m_ban(struct Client *client_p, struct Client *source_p,
     if (!has_member_flags(find_channel_link(source_p, chptr), CHFL_HALFOP | CHFL_CHANOP)) {
       sendto_one(source_p, numeric_form(ERR_CHANOPRIVSNEEDED),
                  me.name, parv[0], chptr->name);
-      return;
+      return 0;
     }
 
     // Figure out who they are trying to ban
    // bannedUser = find_chasing(client_p, source_p, banParm, &chasing);
     if (bannedUser == NULL)
-      return;
+      return 0;
 
     //@evo tc -> if ircop dont ban
 //    if (IsOper(bannedUser))
@@ -376,7 +376,7 @@ static void m_ban(struct Client *client_p, struct Client *source_p,
 
     // Get shortcut to their username
     if (bannedUser->username == NULL)
-      return;
+      return 0;
     userName = bannedUser->username;
 
     // Figure out the nick that was banned, for purposes of sending a message
@@ -406,8 +406,8 @@ static void m_ban(struct Client *client_p, struct Client *source_p,
   }
 
   // OK, add the ban
-  if(!add_id(client_p, chptr, banStr, CHFL_BAN))
-    return;
+  if(!add_id(source_p, chptr, banStr, CHFL_BAN))
+    return 0;
 
   sendto_one(source_p, banNick);
 
@@ -421,6 +421,7 @@ static void m_ban(struct Client *client_p, struct Client *source_p,
 
   // !TEST! Send a debug message
   sendto_one(source_p,":%s NOTICE %s :*** Notice -- banning nick %s from %s, banParm is %s, banid is %s, duration %d.",me.name, source_p->name, banNick, chptr->name, banParm, banStr, duration);
+  return 0;
 }
 #ifdef USE_MORE_CODE
 static void warnLikelyHackerDetails(struct Client *source_p)

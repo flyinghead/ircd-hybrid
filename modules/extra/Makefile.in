@@ -146,9 +146,6 @@ LTLIBRARIES = $(modules_LTLIBRARIES)
 m_opme_la_LIBADD =
 am_m_opme_la_OBJECTS = m_opme.lo
 m_opme_la_OBJECTS = $(am_m_opme_la_OBJECTS)
-m_evo_la_LIBADD =
-am_m_evo_la_OBJECTS = m_evo.lo
-m_evo_la_OBJECTS = $(am_m_evo_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -156,9 +153,6 @@ am__v_lt_1 =
 m_opme_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(m_opme_la_LDFLAGS) $(LDFLAGS) -o $@
-m_evo_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
-        $(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
-        $(m_evo_la_LDFLAGS) $(LDFLAGS) -o $@
 
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -196,8 +190,6 @@ am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(m_opme_la_SOURCES)
 DIST_SOURCES = $(m_opme_la_SOURCES)
-SOURCES = $(m_evo_la_SOURCES)
-DIST_SOURCES = $(m_evo_la_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -373,9 +365,6 @@ modulesdir = $(pkglibdir)/modules/extra
 modules_LTLIBRARIES = m_opme.la
 m_opme_la_LDFLAGS = $(MODULE_FLAGS)
 m_opme_la_SOURCES = m_opme.c
-modules_LTLIBRARIES = m_evo.la
-m_evo_la_LDFLAGS = $(MODULE_FLAGS)
-m_evo_la_SOURCES = m_evo.c
 all: all-am
 
 .SUFFIXES:
@@ -448,9 +437,6 @@ clean-modulesLTLIBRARIES:
 m_opme.la: $(m_opme_la_OBJECTS) $(m_opme_la_DEPENDENCIES) $(EXTRA_m_opme_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(m_opme_la_LINK) -rpath $(modulesdir) $(m_opme_la_OBJECTS) $(m_opme_la_LIBADD) $(LIBS)
 
-m_evo.la: $(m_evo_la_OBJECTS) $(m_evo_la_DEPENDENCIES) $(EXTRA_m_evo_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(m_evo_la_LINK) -rpath $(modulesdir) $(m_evo_la_OBJECTS) $(m_evo_la_LIBADD) $(LIBS)
-
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
@@ -458,7 +444,6 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/m_opme.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/m_evo.Plo@am__quote@
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\

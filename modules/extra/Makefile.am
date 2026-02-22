@@ -10,10 +10,4 @@ m_opme_la_LDFLAGS = $(MODULE_FLAGS)
 
 m_opme_la_SOURCES = m_opme.c
 
-modules_LTLIBRARIES = m_evo.la
-
-m_evo_la_LDFLAGS = $(MODULE_FLAGS)
-
-m_evo_la_SOURCES = m_evo.c
-
 modules: $(modules_LTLIBRARIES)
