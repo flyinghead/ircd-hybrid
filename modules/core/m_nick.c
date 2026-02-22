@@ -192,7 +192,7 @@ change_local_nick(struct Client *source_p, const char *nick)
   assert(MyClient(source_p));
  //sponji only opers can change nicks.
  if (!HasOFlag(source_p, OPER_FLAG_OPME)) {
-   sendto_realops_flags(UMODE_ALL, L_ALL,"%s (%s@%s) [%s] IP = %s attempted NICK change to %s", 
+   sendto_realops_flags(UMODE_ALL, L_ALL, SEND_NOTICE, "%s (%s@%s) [%s] IP = %s attempted NICK change to %s",
                 source_p->name, source_p->username, source_p->host, source_p->info, source_p->sockhost, nick);
         exit_client(source_p, "Killed for nick change attempt");
           return;
